@@ -3,6 +3,7 @@ package ru.netology.zverev.service;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import ru.netology.zverev.configuration.OperationProperties;
 import ru.netology.zverev.domain.operation.Operation;
 
 import java.util.LinkedList;
@@ -12,6 +13,7 @@ import java.util.Queue;
 public class AsyncInputOperationService {
     private final Queue<Operation> queue = new LinkedList<>();
     private final StatementService statementService;
+    private final OperationProperties properties;
     @PostConstruct
     public void init() {
         this.startAsyncOperationProcessing();
@@ -34,7 +36,7 @@ public class AsyncInputOperationService {
             if (operation == null) {
                 try {
                     System.out.println("Waiting for next operation in queue");
-                    Thread.sleep(1_000);
+                    Thread.sleep(properties.getTimeout());
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }

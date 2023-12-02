@@ -1,19 +1,22 @@
 package ru.netology.zverev.service;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import ru.netology.zverev.domain.operation.Operation;
 
 import java.util.LinkedList;
 import java.util.Queue;
+@Component
 @RequiredArgsConstructor
 public class AsyncInputOperationService {
     private final Queue<Operation> queue = new LinkedList<>();
     private final StatementService statementService;
-
-    public boolean offerOperation(Operation operation) {
-        System.out.println("Operation added for processing" + operation);
-        return queue.offer(operation);
+    @PostConstruct
+    public void init() {
+        this.startAsyncOperationProcessing();
     }
+
 
     public void startAsyncOperationProcessing() {
         Thread t = new Thread() {
@@ -43,4 +46,9 @@ public class AsyncInputOperationService {
     }
 
     private void processOperation(Operation operation) { statementService.saveOperation(operation); }
+
+    public boolean offerOperation(Operation operation) {
+        System.out.println("Operation added for processing" + operation);
+        return queue.offer(operation);
+    }
 }

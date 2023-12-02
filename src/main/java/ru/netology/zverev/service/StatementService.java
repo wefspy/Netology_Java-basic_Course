@@ -1,5 +1,6 @@
 package ru.netology.zverev.service;
 
+import org.springframework.stereotype.Component;
 import ru.netology.zverev.domain.operation.Operation;
 
 import java.util.ArrayList;
@@ -7,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Component
 public class StatementService {
     private final Map<Integer, List<Operation>> storage = new HashMap<>();
 

@@ -6,12 +6,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.netology.zverev.controller.dto.CustomerDTO;
-import ru.netology.zverev.controller.dto.CustomersGetResponse;
 import ru.netology.zverev.domain.Customer;
 import ru.netology.zverev.service.CustomerService;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -39,7 +37,7 @@ public class CustomerController {
 
 
     @PostMapping(path = "/")
-    public ResponseEntity<Object> addEmployee(@RequestBody String name) {
+    public ResponseEntity<Object> saveCustomer(@RequestBody String name) {
         Customer createdCustomer = customerService.saveCustomer(name);
         CustomerDTO createdCustomerDTO = new CustomerDTO(createdCustomer.getId(), createdCustomer.getName());
 

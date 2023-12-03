@@ -10,8 +10,8 @@ import lombok.*;
 public class CashbackOperation extends Operation {
     private int cashbackAmount;
 
-    public CashbackOperation(int CustomerID, int sum, String currency, String merchant, int cashbackAmount) {
-        super(CustomerID, sum, currency, merchant);
+    public CashbackOperation(int OperationID, int CustomerID, int sum, String currency, String merchant, int cashbackAmount) {
+        super(OperationID, CustomerID, sum, currency, merchant);
         this.cashbackAmount = cashbackAmount;
     }
 

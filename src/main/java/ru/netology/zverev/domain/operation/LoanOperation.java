@@ -9,8 +9,8 @@ import lombok.*;
 public class LoanOperation extends Operation {
     private int loadId;
 
-    public LoanOperation(int CustomerID, int sum, String currency, String merchant, int loadId) {
-        super(CustomerID, sum, currency, merchant);
+    public LoanOperation(int operationID, int customerID, int sum, String currency, String merchant, int loadId) {
+        super(operationID, customerID, sum, currency, merchant);
         this.loadId = loadId;
     }
 

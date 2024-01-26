@@ -1,6 +1,7 @@
 package ru.netology.zverev.controller;
 
 import org.junit.Assert;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,17 +13,35 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.netology.zverev.domain.operation.Operation;
+import ru.netology.zverev.service.StatementService;
 
+import java.lang.reflect.Field;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
 class OperationControllerTest {
     @Autowired
     private TestRestTemplate restTemplate;
+    @Autowired
+    private StatementService statementService;
     @LocalServerPort
     int randomServerPort;
+
+    @BeforeEach
+    public void initStorage() throws NoSuchFieldException, IllegalAccessException {
+        Field field = statementService.getClass().getDeclaredField("storage");
+        field.setAccessible(true);
+        Map<Integer, List<Operation>> storage = (Map<Integer, List<Operation>>) field.get(statementService);
+
+        storage.clear();
+        storage.put(0, new ArrayList<>(List.of(new Operation(0, 0, 100, "Euro", "eBay"))));
+        storage.put(1, new ArrayList<>(List.of(new Operation(1, 1, 100, "Euro", "Amazon"))));
+    }
     @Test
     public void GetRequestGetAllOperations() throws URISyntaxException {
         final String baseUrl = "http://localhost:"+randomServerPort+"/api/operations";
@@ -51,19 +70,22 @@ class OperationControllerTest {
     }
 
     @Test
-    public void PostRequestDeleteOperation() throws URISyntaxException {
+    public void DeleteRequestDeleteOperation() throws URISyntaxException, NoSuchFieldException, IllegalAccessException {
         String id = "0";
         final String baseUrl = "http://localhost:"+randomServerPort+"/api/operations/" + id;
         URI uri = new URI(baseUrl);
 
-        HttpHeaders headers = new HttpHeaders();
+        Field field = statementService.getClass().getDeclaredField("storage");
+        field.setAccessible(true);
+        Map<Integer, List<Operation>> storage = (Map<Integer, List<Operation>>) field.get(statementService);
 
-        HttpEntity<String> request = new HttpEntity<>(headers);
+        int startHashCode = storage.hashCode();
 
-        ResponseEntity<String> result = this.restTemplate.postForEntity(uri, request, String.class);
+        this.restTemplate.delete(uri);
 
-        Assert.assertEquals(200, result.getStatusCodeValue());
-        Assert.assertEquals("[]", result.getBody());
+        int endHashCode = storage.hashCode();
+
+        Assert.assertTrue(endHashCode != startHashCode);
     }
 
     @Test

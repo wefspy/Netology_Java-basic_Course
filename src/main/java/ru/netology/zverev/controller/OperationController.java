@@ -31,7 +31,7 @@ public class OperationController {
         return ResponseEntity.status(HttpStatus.OK).body(operations);
     }
 
-    @PostMapping(path = "/{id}")
+    @DeleteMapping(path = "/{id}")
     public ResponseEntity<Object> deleteOperation(@PathVariable int id) {
         List<Operation> operations = statementService.deleteOperation(id);
 

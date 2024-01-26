@@ -14,11 +14,6 @@ import java.util.Map;
 public class StatementService {
     private final Map<Integer, List<Operation>> storage = new HashMap<>();
 
-    @PostConstruct
-    public void initStorage() {
-        this.saveOperation(new Operation(0, 0, 100, "Euro", "eBay"));
-        this.saveOperation(new Operation(1, 1, 100, "Euro", "Amazon"));
-    }
     public List<Operation> saveOperation(Operation operation) {
         if (!storage.containsKey(operation.getCustomerID()))
             createListInMapForNewCustomer(operation.getCustomerID());
@@ -38,19 +33,16 @@ public class StatementService {
     }
 
     public List<Operation> deleteOperation(int operationID) {
-        List<Operation> needValue = null;
+
         for (List<Operation> operations : storage.values()) {
             for (Operation operation : operations) {
                 if (operation.getOperationID() == operationID) {
-                    needValue = operations;
-                    break;
+                    operations.remove(operationID);
+                    return operations;
                 }
             }
         }
-        if (needValue != null ) {
-            needValue.remove(operationID);
-            return needValue;
-        }
+
         return new ArrayList<>();
     }
 
